@@ -1,0 +1,57 @@
+@import "tailwindcss";
+
+/* Màu đề xuất ban đầu — cần đối chiếu nhận diện thương hiệu chính thức của trường */
+:root {
+  --brand-orange: #e87524;
+  --brand-orange-dark: #c95b16;
+  --brand-orange-soft: #fff1e7;
+  --page-background: #f7f8fa;
+  --surface: #ffffff;
+  --text-primary: #20242b;
+  --text-muted: #667085;
+  --border: #e6e8ec;
+  --success: #168a55;
+  --warning: #c77a12;
+  --danger: #c43d3d;
+  --info: #2671b8;
+}
+
+@theme inline {
+  --color-brand: var(--brand-orange);
+  --color-brand-dark: var(--brand-orange-dark);
+  --color-brand-soft: var(--brand-orange-soft);
+  --color-page: var(--page-background);
+  --color-surface: var(--surface);
+  --color-ink: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-line: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+  --font-sans: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background: var(--page-background);
+  color: var(--text-primary);
+}
+
+.input {
+  @apply w-full rounded-lg border border-line bg-white px-3 py-2 text-sm text-ink outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/20 disabled:bg-page;
+}
+.label {
+  @apply mb-1 block text-sm font-medium text-ink;
+}
+.table {
+  @apply w-full text-left text-sm;
+}
+.table th {
+  @apply border-b border-line bg-page px-3 py-2 font-medium text-muted whitespace-nowrap;
+}
+.table td {
+  @apply border-b border-line px-3 py-2 align-top;
+}
+.link {
+  @apply font-medium text-brand-dark hover:underline;
+}
