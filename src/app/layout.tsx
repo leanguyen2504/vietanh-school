@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Be_Vietnam_Pro } from "next/font/google";
 import "./globals.css";
+import { LOGO_URL } from "@/components/brand";
 
 const font = Be_Vietnam_Pro({
   variable: "--font-be-vietnam",
@@ -8,10 +9,12 @@ const font = Be_Vietnam_Pro({
   weight: ["400", "500", "600", "700"],
 });
 
+
 export const metadata: Metadata = {
   title: "Cổng quản trị nội bộ — Trường Tiểu học & THCS Việt Anh",
   description: "Hệ thống quản trị nội bộ Trường Việt Anh",
   robots: { index: false, follow: false },
+  icons: { icon: `/_next/image?url=${encodeURIComponent(LOGO_URL)}&w=64&q=75` },
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {

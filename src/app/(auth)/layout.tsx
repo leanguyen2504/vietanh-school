@@ -1,5 +1,5 @@
 import { CalendarDays, ClipboardCheck, GraduationCap, ShieldCheck } from "lucide-react";
-import { SchoolMark } from "@/components/brand";
+import { SchoolLogo, SchoolMark } from "@/components/brand";
 
 const FEATURES = [
   { icon: GraduationCap, text: "Hồ sơ học sinh, lớp học theo năm học" },
@@ -15,13 +15,14 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-white/10" aria-hidden />
         <div className="absolute -bottom-32 -left-16 h-96 w-96 rounded-full bg-white/5" aria-hidden />
         <div className="relative flex items-center gap-3">
-          <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-white text-lg font-bold text-brand-dark">VA</div>
+          <span className="rounded-full bg-white p-1 shadow-sm"><SchoolLogo size={56} /></span>
           <div>
             <p className="font-semibold">Trường Tiểu học & THCS Việt Anh</p>
             <p className="text-sm text-white/80">Hải Phòng</p>
           </div>
         </div>
         <div className="relative">
+          <span className="mb-8 inline-flex rounded-full bg-white p-2 shadow-lg ring-4 ring-white/20"><SchoolLogo size={112} /></span>
           <h1 className="text-3xl font-semibold leading-tight">Cổng quản trị nội bộ</h1>
           <p className="mt-3 max-w-md text-white/85">Một nơi để Ban Giám hiệu, giáo viên và văn phòng cùng quản lý công việc hằng ngày của nhà trường.</p>
           <ul className="mt-8 space-y-3">
