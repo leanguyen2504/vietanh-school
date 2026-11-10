@@ -3,6 +3,7 @@
 -- Chạy trong Supabase SQL Editor. Sau đó có thể chạy lại demo_seed.sql.
 -- =====================================================================
 begin;
+delete from public.finance_entries where is_demo;
 delete from public.attendance_records where student_id in (select id from public.students where is_demo);
 delete from public.attendance_sessions s where not exists (select 1 from public.attendance_records r where r.session_id = s.id);
 delete from public.enrollments where student_id in (select id from public.students where is_demo);

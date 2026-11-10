@@ -67,7 +67,7 @@ export default async function DocumentsPage({ searchParams }: { searchParams: Pr
                     <td><Badge tone={d.access_level === "all_staff" ? "neutral" : "warning"}>{DOC_ACCESS[d.access_level]}</Badge></td>
                     <td className="whitespace-nowrap">{size(d.size_bytes)}</td>
                     <td className="whitespace-nowrap">{fmtDate(d.created_at)}</td>
-                    <td>{(ctx.role === "admin" || ctx.role === "principal" || d.uploaded_by === ctx.userId) && <ActionButton action={deleteDocument} fields={{ id: d.id }} variant="ghost" confirm="Xóa vĩnh viễn tài liệu này?">Xóa</ActionButton>}</td>
+                    <td>{(can(ctx.role, ["admin", "principal"]) || d.uploaded_by === ctx.userId) && <ActionButton action={deleteDocument} fields={{ id: d.id }} variant="ghost" confirm="Xóa vĩnh viễn tài liệu này?">Xóa</ActionButton>}</td>
                   </tr>
                 ))}
               </tbody>

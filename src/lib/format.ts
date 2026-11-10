@@ -91,3 +91,22 @@ export function parseCSV(text: string): string[][] {
   if (row.some((c) => c.trim() !== "")) rows.push(row);
   return rows;
 }
+
+const VND = new Intl.NumberFormat("vi-VN");
+/** 12.500.000 đ */
+export function fmtMoney(n: number) {
+  return `${VND.format(Math.round(n))} đ`;
+}
+/** Dạng rút gọn cho biểu đồ: 1,25 tỷ · 380 tr */
+export function fmtMoneyShort(n: number) {
+  const a = Math.abs(n);
+  const sign = n < 0 ? "−" : "";
+  if (a >= 1e9) return `${sign}${(a / 1e9).toLocaleString("vi-VN", { maximumFractionDigits: 2 })} tỷ`;
+  if (a >= 1e6) return `${sign}${Math.round(a / 1e6).toLocaleString("vi-VN")} tr`;
+  return `${sign}${VND.format(a)} đ`;
+}
+/** "2026-11" → "T11/2026" */
+export function fmtMonth(ym: string) {
+  const [y, m] = ym.split("-");
+  return `T${Number(m)}/${y}`;
+}

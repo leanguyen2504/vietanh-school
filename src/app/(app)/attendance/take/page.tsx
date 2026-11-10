@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { requireModule } from "@/lib/auth";
+import { can } from "@/lib/roles";
 import { myClassIds } from "@/lib/queries";
 import { fmtDate, fmtDateTime, todayVN } from "@/lib/format";
 import { ATT_SESSION } from "@/lib/labels";
@@ -20,7 +21,7 @@ export default async function TakeAttendance({ searchParams }: { searchParams: P
 
   if (!sp.class) {
     const { data: cls } = year ? await supabase.from("classes").select("id, name").eq("academic_year_id", year.id).eq("status", "active").order("name") : { data: [] };
-    const list = (cls ?? []).filter((c: any) => ctx.role === "admin" || ctx.role === "principal" || mine.includes(c.id));
+    const list = (cls ?? []).filter((c: any) => can(ctx.role, ["admin", "principal"]) || mine.includes(c.id));
     return (
       <>
         <PageHeader title="Chọn lớp điểm danh" />
@@ -44,7 +45,7 @@ export default async function TakeAttendance({ searchParams }: { searchParams: P
     .filter((e) => e.students)
     .map((e) => ({ id: e.student_id, code: e.students.code, name: e.students.full_name, status: recMap.get(e.student_id)?.status ?? "present", reason: recMap.get(e.student_id)?.reason ?? "" }))
     .sort((a, b) => a.name.split(" ").pop()!.localeCompare(b.name.split(" ").pop()!, "vi") || a.name.localeCompare(b.name, "vi"));
-  const canTake = ctx.role === "admin" || ctx.role === "principal" || mine.includes(cls.id);
+  const canTake = can(ctx.role, ["admin", "principal"]) || mine.includes(cls.id);
   const s: any = sess;
 
   return (

@@ -5,8 +5,8 @@ import { usePathname } from "next/navigation";
 import { useState } from "react";
 import clsx from "clsx";
 import {
-  BarChart3, Bell, BookOpen, CalendarDays, ClipboardCheck, FileText, GraduationCap, LayoutDashboard,
-  ListChecks, Menu, Settings, UserSquare2, Utensils, X,
+  BarChart3, Bell, BookOpen, Briefcase, CalendarDays, ClipboardCheck, FileText, GraduationCap, LayoutDashboard,
+  ListChecks, Menu, Settings, UserSquare2, Utensils, Wallet, X,
 } from "lucide-react";
 import { SchoolMark } from "@/components/brand";
 
@@ -14,34 +14,44 @@ const ICONS = {
   dashboard: LayoutDashboard, students: GraduationCap, classes: BookOpen, staff: UserSquare2,
   attendance: ClipboardCheck, events: CalendarDays, announcements: Bell, tasks: ListChecks,
   documents: FileText, menus: Utensils, reports: BarChart3, settings: Settings,
+  owner: Briefcase, finance: Wallet,
 };
 
 export type NavItem = { key: keyof typeof ICONS; href: string; label: string };
+export type NavGroup = { title?: string; highlight?: boolean; items: NavItem[] };
 
-export function Sidebar({ items }: { items: NavItem[] }) {
+export function Sidebar({ groups }: { groups: NavGroup[] }) {
   const path = usePathname();
   const [open, setOpen] = useState(false);
+  const link = (it: NavItem) => {
+    const Icon = ICONS[it.key];
+    const active = it.href === "/" ? path === "/" : path === it.href || path.startsWith(it.href + "/");
+    return (
+      <Link
+        key={it.key}
+        href={it.href}
+        onClick={() => setOpen(false)}
+        aria-current={active ? "page" : undefined}
+        className={clsx(
+          "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
+          active ? "bg-brand-soft text-brand-dark" : "text-muted hover:bg-page hover:text-ink",
+        )}
+      >
+        <Icon className={clsx("h-4 w-4", active && "text-brand")} aria-hidden />
+        {it.label}
+      </Link>
+    );
+  };
   const list = (
-    <nav className="flex flex-col gap-0.5 p-3" aria-label="Điều hướng chính">
-      {items.map((it) => {
-        const Icon = ICONS[it.key];
-        const active = it.href === "/" ? path === "/" : path.startsWith(it.href);
-        return (
-          <Link
-            key={it.key}
-            href={it.href}
-            onClick={() => setOpen(false)}
-            aria-current={active ? "page" : undefined}
-            className={clsx(
-              "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition",
-              active ? "bg-brand-soft text-brand-dark" : "text-muted hover:bg-page hover:text-ink",
-            )}
-          >
-            <Icon className={clsx("h-4 w-4", active && "text-brand")} aria-hidden />
-            {it.label}
-          </Link>
-        );
-      })}
+    <nav className="flex flex-col gap-3 p-3" aria-label="Điều hướng chính">
+      {groups.filter((g) => g.items.length).map((g, i) => (
+        <div key={g.title ?? i} className={clsx(g.highlight && "rounded-xl border border-brand/30 bg-brand-soft/50 p-1.5")}>
+          {g.title && (
+            <p className={clsx("px-3 pb-1 pt-1 text-[11px] font-semibold uppercase tracking-wide", g.highlight ? "text-brand-dark" : "text-muted")}>{g.title}</p>
+          )}
+          <div className="flex flex-col gap-0.5">{g.items.map(link)}</div>
+        </div>
+      ))}
     </nav>
   );
   return (
@@ -49,7 +59,7 @@ export function Sidebar({ items }: { items: NavItem[] }) {
       <button className="rounded-lg p-2 text-ink hover:bg-page lg:hidden" onClick={() => setOpen(true)} aria-label="Mở menu">
         <Menu className="h-5 w-5" />
       </button>
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 border-r border-line bg-surface lg:block">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-60 overflow-y-auto border-r border-line bg-surface lg:block">
         <div className="border-b border-line px-4 py-3"><SchoolMark /></div>
         {list}
       </aside>

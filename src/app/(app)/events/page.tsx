@@ -75,7 +75,7 @@ export default async function EventsPage({ searchParams }: { searchParams: Promi
                     {e.staff?.full_name && <p className="flex items-center gap-1 text-muted"><User className="h-3 w-3" />{e.staff.full_name}</p>}
                     {e.participants && <p className="flex items-center gap-1 text-muted"><Users className="h-3 w-3" />{e.participants}</p>}
                     {e.document_id && <a className="link" href={`/api/files/document/${e.document_id}`}>Tài liệu</a>}
-                    {manage && (ctx.role === "admin" || ctx.role === "principal" || e.created_by === ctx.userId) && (
+                    {manage && (can(ctx.role, ["admin", "principal"]) || e.created_by === ctx.userId) && (
                       <div className="mt-1"><ActionButton action={deleteEvent} fields={{ id: e.id }} variant="ghost" confirm="Xóa lịch này?">Xóa</ActionButton></div>
                     )}
                   </li>

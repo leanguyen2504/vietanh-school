@@ -24,8 +24,8 @@ supabase/seed         Dữ liệu demo + script xóa demo
 
 ## Cài đặt
 
-1. Tạo dự án Supabase, mở **SQL Editor** và chạy lần lượt các file trong `supabase/migrations/` (hoặc một file gộp `supabase/setup_all.sql` + `0004_*.sql`).
-2. (Tùy chọn) Dữ liệu demo: sửa mật khẩu ở dòng `demo_password` trong `supabase/seed/demo_seed.sql` rồi chạy. Xóa demo: `supabase/seed/reset_demo.sql`.
+1. Tạo dự án Supabase, mở **SQL Editor** và chạy lần lượt các file trong `supabase/migrations/` (hoặc một file gộp `supabase/setup_all.sql` rồi `0004`, `0005`, `0006`). **`0005` phải chạy riêng, trước `0006`.**
+2. (Tùy chọn) Dữ liệu demo: sửa mật khẩu ở dòng `demo_password` trong `supabase/seed/demo_seed.sql` rồi chạy. Tài khoản Chủ đầu tư, Kế toán và sổ thu/chi demo: `supabase/seed/demo_owner_finance.sql`. Xóa demo: `supabase/seed/reset_demo.sql`.
 3. Sao chép `.env.example` thành `.env.local` và điền:
 
 | Biến | Bắt buộc | Ghi chú |
@@ -45,7 +45,7 @@ npm run dev     # http://localhost:3000
 
 ## Tài khoản demo
 
-Sau khi chạy seed: `quantri@`, `bgh@`, `hdt@`, `totruong.thcs@`, `gv.6a1@`, `gv.1a@`, `vanphong@`, `yte@` + `demo.vietanh.example`, mật khẩu là giá trị `demo_password` bạn đặt. **Xóa toàn bộ tài khoản demo trước khi nhập dữ liệu thật.**
+Sau khi chạy seed: `quantri@`, `bgh@`, `hdt@`, `totruong.thcs@`, `gv.6a1@`, `gv.1a@`, `vanphong@`, `yte@`, `chudautu@` (Chủ đầu tư), `ketoan@` (Kế toán) + `demo.vietanh.example`, mật khẩu là giá trị `demo_password` bạn đặt. **Xóa toàn bộ tài khoản demo trước khi nhập dữ liệu thật.**
 
 Tài khoản thật: quản trị viên mời qua Cấu hình → Tài khoản (cần service role key) hoặc tạo trong Supabase → Authentication, sau đó cấp vai trò + liên kết hồ sơ nhân sự + kích hoạt. Tài khoản mới mặc định **chưa có quyền**.
 
@@ -59,14 +59,28 @@ update public.profiles set role = 'admin', is_active = true where email = 'email
 
 | Vai trò | Phạm vi mặc định |
 |---|---|
-| Quản trị hệ thống | Toàn bộ, cấu hình, tài khoản, nhật ký |
+| Quản trị hệ thống | Toàn bộ nghiệp vụ, cấu hình, tài khoản, nhật ký; **không** xem tài chính |
+| Chủ đầu tư | Mọi quyền của Ban Giám hiệu + xem toàn bộ (kể cả nhật ký, cấu hình); trang riêng *Tổng quan điều hành*; toàn quyền tài chính. Mỗi lần thêm/sửa/xóa dữ liệu, Ban Giám hiệu nhận thông báo trong hệ thống |
 | Ban Giám hiệu | Toàn trường; duyệt/phát hành thông báo, thực đơn; quản lý lớp |
 | Hội đồng trường | Báo cáo tổng hợp, tài liệu được chia sẻ; **không** xem hồ sơ cá nhân học sinh |
 | Tổ trưởng | Lớp/học sinh thuộc cấp học của tổ; công việc của tổ; soạn thông báo (cần duyệt) |
 | Giáo viên | Lớp được phân công (chủ nhiệm/bộ môn); điểm danh các lớp đó |
 | Văn phòng | Hồ sơ học sinh, nhân sự, lịch, tài liệu, thực đơn (nhập), xuất dữ liệu |
+| Kế toán | Ghi khoản thu/chi (chờ duyệt), sửa/xóa khoản của mình khi chưa duyệt, xem dashboard tài chính; lịch, thông báo, công việc, tài liệu |
 | Y tế / bán trú | Xem học sinh; nhập thực đơn; không xem ghi chú hành chính |
 | Phụ huynh | Đã thiết kế trong RLS (chỉ con đã xác minh) nhưng **chưa bật** |
+
+### Tài chính
+
+| Thao tác | Chủ đầu tư | Ban Giám hiệu | Kế toán | Vai trò khác |
+|---|---|---|---|---|
+| Xem dashboard, sổ thu/chi, xuất CSV | ✓ | ✓ | ✓ | ✗ |
+| Ghi khoản thu/chi | ✓ (tự duyệt) | ✗ | ✓ (chờ duyệt) | ✗ |
+| Duyệt / từ chối khoản chờ duyệt | ✓ | ✓ (không sửa nội dung) | ✗ | ✗ |
+| Sửa / xóa khoản đã duyệt | ✓ | ✗ | ✗ | ✗ |
+| Quản lý hạng mục | ✓ | ✗ | ✗ | ✗ |
+
+Báo cáo chỉ tính khoản **đã duyệt**. Thông báo trong hệ thống (chuông): Kế toán ghi khoản → Chủ đầu tư + BGH; duyệt/từ chối → người ghi; Chủ đầu tư thay đổi → BGH. Chưa gửi email/Zalo.
 
 Kiểm soát chính ở database: hàm trong schema `app` (`can_view_student`, `can_take_attendance`…), RLS trên mọi bảng, trigger chặn tự nâng quyền, chặn phát hành thông báo khi chưa được duyệt, khóa dữ liệu năm học đã khóa, và RPC `save_attendance` bắt buộc lý do khi sửa phiên đã xác nhận. Nhật ký `audit_logs` chỉ lưu tên cột thay đổi, không lưu giá trị cá nhân.
 

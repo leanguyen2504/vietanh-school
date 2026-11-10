@@ -21,7 +21,7 @@ export default async function AttendancePage({ searchParams }: { searchParams: P
   const overview = can(ctx.role, PERMS.attendanceOverview);
   const visible = overview ? rows : rows.filter((r) => mine.includes(r.class_id));
   const done = visible.filter((r) => r.session_status === "confirmed").length;
-  const canTake = (cid: string) => ctx.role === "admin" || ctx.role === "principal" || mine.includes(cid);
+  const canTake = (cid: string) => can(ctx.role, ["admin", "principal"]) || mine.includes(cid);
 
   return (
     <>

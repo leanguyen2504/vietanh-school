@@ -14,6 +14,9 @@
   --warning: #c77a12;
   --danger: #c43d3d;
   --info: #2671b8;
+  /* Biểu đồ: 2 màu đã kiểm tra phân biệt được với người mù màu (thu = cam thương hiệu, chi = xanh) */
+  --chart-income: #e87524;
+  --chart-expense: #2f6fb0;
 }
 
 @theme inline {
@@ -29,6 +32,8 @@
   --color-warning: var(--warning);
   --color-danger: var(--danger);
   --color-info: var(--info);
+  --color-income: var(--chart-income);
+  --color-expense: var(--chart-expense);
   --font-sans: var(--font-be-vietnam), ui-sans-serif, system-ui, sans-serif;
 }
 

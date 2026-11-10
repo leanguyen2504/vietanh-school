@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Bell, BookOpen, ClipboardCheck, GraduationCap, ListChecks, UserSquare2 } from "lucide-react";
+import { redirect } from "next/navigation";
 import { requireModule } from "@/lib/auth";
 import { can, PERMS, ROLE_LABELS } from "@/lib/roles";
 import { addDays, fmtDate, fmtDateTime, todayVN } from "@/lib/format";
@@ -9,6 +10,7 @@ import { Alert, Badge, Card, DenyNotice, EmptyState, PageHeader, StatCard } from
 export default async function Dashboard({ searchParams }: { searchParams: Promise<{ denied?: string }> }) {
   const sp = await searchParams;
   const ctx = await requireModule("dashboard");
+  if (ctx.role === "owner") redirect(sp.denied ? "/owner?denied=1" : "/owner");
   const { supabase, year, role } = ctx;
   const today = todayVN();
 
